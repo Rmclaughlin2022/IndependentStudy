@@ -4,7 +4,7 @@ export default function App() {
 
   return (
     <View style={styles.container}>
-      <Text style={{ fontSize: 24 }}>🚀 Hello, React Native!</Text>
+      <Text style={{ fontSize: 24 }}>Ryan's Tracking App!</Text>
     </View>
   );
 }
