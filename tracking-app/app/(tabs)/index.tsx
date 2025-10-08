@@ -1,47 +1,16 @@
-import React, { useEffect, useState}  from "react";
-import { View, Text, Button, TextInput, StyleSheet } from "react-native";
-import { db } from "../firebaseConfig";
-import { collection, addDoc, getDocs, DocumentData } from "firebase/firestore";
+import React from "react";
+import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
 
-interface Tdata {
-  name: string;
-  age: string;
-  email: string;
-  password: string;
-  steps: number;
-  date: string; 
-}
-
-export default function App() {
-  const [data, setData] = useState<Tdata[]>([]);
-
-  async function addSample(): Promise<void> {
-    await addDoc(collection(db, "trackingData"), {
-      steps: Math.floor(Math.random() * 10000),
-      date: new Date().toISOString(),
-    });
-    fetchData();
-  }
-
-
-  async function fetchData(): Promise<void> {
-    const snapshot = await getDocs(collection(db, "trackingData"));
-    const items: Tdata[] = snapshot.docs.map((doc) => doc.data() as Tdata);
-    setData(items);
-  }
-
-  useEffect(() => {
-    fetchData();
-  }, []);
-
+export default function StartScreen() {
+  const handleStart = () => {
+    console.log("Start button pressed");
+};
   return (
     <View style={styles.container}>
-      <Button title="Add Steps" onPress={addSample} />
-      {data.map((item, i) => (
-        <Text key={i}>
-          {item.date}: {item.steps} steps
-        </Text>
-      ))}
+      <Text style={styles.title}>Welcome to Ryan's Tracking App</Text>
+      <TouchableOpacity style={styles.button} onPress={handleStart}>
+        <Text style={styles.buttonText}>Start Tracking</Text>
+      </TouchableOpacity>
     </View>
   );
 }
@@ -49,7 +18,32 @@ export default function App() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#030303ff',
+    padding: 20,
+  },
+  title: {
+    fontSize: 32,
+    fontWeight: 'bold',
+    color: "#fff",
+    marginBottom: 20,
+  },
+  subtitle: {
+    fontSize: 18,
+    color: '#666',
+    marginBottom: 40,
+    textAlign: 'center',
+  },
+  button: {
+    backgroundColor: '#007AFF',
+    paddingVertical: 15,
+    paddingHorizontal: 30,
+    borderRadius: 10,
+  },
+  buttonText: {
+    color: '#fff',
+    fontSize: 18,
+    fontWeight: 'bold',
   },
 });
