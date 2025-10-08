@@ -1,10 +1,16 @@
-import { StyleSheet, Text, View, Button } from 'react-native';
+import React from "react";
+import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
 
-export default function App() {
-
+export default function StartScreen() {
+  const handleStart = () => {
+    console.log("Start button pressed");
+};
   return (
     <View style={styles.container}>
-      <Text style={{ fontSize: 24 }}>🚀 Hello, React Native!</Text>
+      <Text style={styles.title}>Welcome to Ryan's Tracking App</Text>
+      <TouchableOpacity style={styles.button} onPress={handleStart}>
+        <Text style={styles.buttonText}>Start Tracking</Text>
+      </TouchableOpacity>
     </View>
   );
 }
@@ -12,8 +18,32 @@ export default function App() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
     justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#030303ff',
+    padding: 20,
+  },
+  title: {
+    fontSize: 32,
+    fontWeight: 'bold',
+    color: "#fff",
+    marginBottom: 20,
+  },
+  subtitle: {
+    fontSize: 18,
+    color: '#666',
+    marginBottom: 40,
+    textAlign: 'center',
+  },
+  button: {
+    backgroundColor: '#007AFF',
+    paddingVertical: 15,
+    paddingHorizontal: 30,
+    borderRadius: 10,
+  },
+  buttonText: {
+    color: '#fff',
+    fontSize: 18,
+    fontWeight: 'bold',
   },
 });
