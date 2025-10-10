@@ -1,7 +1,7 @@
 import * as Location from "expo-location";
 import { useEffect, useState } from "react";
 import { Alert } from "react-native";
-import { db } from "../app/firebaseConfig"; 
+import { db } from "../firebaseConfig";
 import { doc, setDoc } from "firebase/firestore";
 
 export default function useLocationTracker(userId) {
@@ -9,32 +9,28 @@ export default function useLocationTracker(userId) {
 
   useEffect(() => {
     (async () => {
-      let { status } = await Location.requestForegroundPermissionsAsync();
-      if (status !== "granted") {
-        Alert.alert("Permission to access location was denied");
-        return;
-      }
-
-      const subscriber = await Location.watchPositionAsync(
-        {
-          accuracy: Location.Accuracy.High,
-          timeInterval: 5000, 
-          distanceInterval: 5, 
-        },
-        async (loc) => {
-          const coords = {
-            latitude: loc.coords.latitude,
-            longitude: loc.coords.longitude,
-            timestamp: new Date().toISOString(),
-          };
-          setLocation(coords);
-          await setDoc(doc(db, "deviceLocations", userId), coords);
+      try {
+        const { status } = await Location.requestForegroundPermissionsAsync();
+        if (status !== "granted") {
+          Alert.alert("Permission Denied", "Location access is required.");
+          return;
         }
-      );
 
-      return () => subscriber.remove();
+        const loc = await Location.getCurrentPositionAsync({});
+        const { latitude, longitude } = loc.coords;
+        const timestamp = new Date().toISOString();
+
+        const newLocation = { latitude, longitude, timestamp };
+        setLocation(newLocation);
+
+        await setDoc(doc(db, "locations", userId), newLocation);
+        console.log("✅ Location saved:", newLocation);
+      } catch (error) {
+        console.error("Error getting/saving location:", error);
+      }
     })();
   }, [userId]);
 
   return location;
 }
+

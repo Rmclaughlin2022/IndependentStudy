@@ -1,6 +1,6 @@
 import React from "react";
 import { View, Text } from "react-native";
-import { useLocationTracker } from "../hooks/useLocationTracker";
+import  useLocationTracker  from "../hooks/useLocationTracker";
 
 
 export default function HomeScreen() {
