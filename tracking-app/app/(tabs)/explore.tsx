@@ -1,37 +1,35 @@
 import React, { useEffect, useState } from "react";
 import { View, StyleSheet, ActivityIndicator } from "react-native";
 import MapView, { Marker } from "react-native-maps";
-import { collection, getDocs } from "firebase/firestore";
-import { db } from "../firebaseConfig"; 
+import { collection, onSnapshot } from "firebase/firestore";
+import { db } from "../firebaseConfig";
+import useLocationTracker from "../hooks/useLocationTracker";
 
 interface LocationData {
   id: string;
   latitude: number;
   longitude: number;
-  timestamp?: any;
+  timestamp?: string;
 }
 
 export default function ExploreScreen() {
+  const userId = "User_2"; 
+  useLocationTracker(userId);
+
   const [locations, setLocations] = useState<LocationData[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const fetchLocations = async () => {
-      try {
-        const querySnapshot = await getDocs(collection(db, "locations"));
-        const fetched: LocationData[] = querySnapshot.docs.map((doc) => ({
-          id: doc.id,
-          ...(doc.data() as Omit<LocationData, "id">),
-        }));
-        setLocations(fetched);
-      } catch (error) {
-        console.error("Error fetching locations:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
+    const unsubscribe = onSnapshot(collection(db, "locations"), (snapshot) => {
+      const updated: LocationData[] = snapshot.docs.map((doc) => ({
+        id: doc.id,
+        ...(doc.data() as Omit<LocationData, "id">),
+      }));
+      setLocations(updated);
+      setLoading(false);
+    });
 
-    fetchLocations();
+    return () => unsubscribe();
   }, []);
 
   if (loading) {
@@ -42,13 +40,16 @@ export default function ExploreScreen() {
     );
   }
 
+  const initialLat = locations[0]?.latitude ?? 37.78825;
+  const initialLng = locations[0]?.longitude ?? -122.4324;
+
   return (
     <View style={styles.container}>
       <MapView
         style={styles.map}
         initialRegion={{
-          latitude: locations[0]?.latitude || 37.78825,
-          longitude: locations[0]?.longitude || -122.4324,
+          latitude: initialLat,
+          longitude: initialLng,
           latitudeDelta: 0.05,
           longitudeDelta: 0.05,
         }}
@@ -60,9 +61,13 @@ export default function ExploreScreen() {
               latitude: loc.latitude,
               longitude: loc.longitude,
             }}
-            title={`📍 ${new Date(
-              loc.timestamp?.toDate?.() ?? Date.now()
-            ).toLocaleString()}`}
+            title={`${loc.id}`}
+            description={
+              loc.timestamp
+                ? new Date(loc.timestamp).toLocaleString()
+                : "No timestamp"
+            }
+            pinColor={loc.id === userId ? "blue" : "red"} 
           />
         ))}
       </MapView>
@@ -79,3 +84,4 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
 });
+
