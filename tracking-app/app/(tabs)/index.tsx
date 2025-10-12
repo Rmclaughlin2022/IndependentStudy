@@ -1,9 +1,11 @@
 import React from "react";
 import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
+import { router } from "expo-router";
 
 export default function StartScreen() {
   const handleStart = () => {
     console.log("Start button pressed");
+    router.push("/auth/Login")
 };
   return (
     <View style={styles.container}>
