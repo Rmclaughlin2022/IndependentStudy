@@ -18,19 +18,17 @@ export default function ExploreScreen() {
   const user = auth.currentUser;
   const userId = user?.uid ?? null;
 
+  useLocationTracker(userId);
+
   const [locations, setLocations] = useState<LocationData[]>([]);
   const [loading, setLoading] = useState(true);
 
-  // 🚨 If no user is logged in, redirect to Login
   useEffect(() => {
     if (!userId) {
       Alert.alert("Not Logged In", "Please log in to view the map.");
       router.replace("/auth/Login");
       return;
     }
-
-    // Start tracking location once the user is verified
-    useLocationTracker(userId);
 
     const q = query(collection(db, "locations"), where("userId", "==", userId));
 
@@ -45,6 +43,8 @@ export default function ExploreScreen() {
 
     return () => unsubscribe();
   }, [userId]);
+
+  if (!userId) return null; 
 
   if (loading) {
     return (
