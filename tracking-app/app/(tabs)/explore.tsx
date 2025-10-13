@@ -1,26 +1,38 @@
 import React, { useEffect, useState } from "react";
-import { View, StyleSheet, ActivityIndicator } from "react-native";
+import { View, StyleSheet, ActivityIndicator, Alert } from "react-native";
 import MapView, { Marker } from "react-native-maps";
-import { collection, onSnapshot } from "firebase/firestore";
-import { db } from "../firebaseConfig";
+import { collection, onSnapshot, query, where } from "firebase/firestore";
+import { db, auth } from "../firebaseConfig";
 import useLocationTracker from "../hooks/useLocationTracker";
+import { router } from "expo-router";
 
 interface LocationData {
   id: string;
   latitude: number;
   longitude: number;
   timestamp?: string;
+  userId?: string;
 }
 
 export default function ExploreScreen() {
-  const userId = "User_2"; 
+  const user = auth.currentUser;
+  const userId = user?.uid ?? null;
+
   useLocationTracker(userId);
 
   const [locations, setLocations] = useState<LocationData[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const unsubscribe = onSnapshot(collection(db, "locations"), (snapshot) => {
+    if (!userId) {
+      Alert.alert("Not Logged In", "Please log in to view the map.");
+      router.replace("/auth/Login");
+      return;
+    }
+
+    const q = query(collection(db, "locations"), where("userId", "==", userId));
+
+    const unsubscribe = onSnapshot(q, (snapshot) => {
       const updated: LocationData[] = snapshot.docs.map((doc) => ({
         id: doc.id,
         ...(doc.data() as Omit<LocationData, "id">),
@@ -30,7 +42,9 @@ export default function ExploreScreen() {
     });
 
     return () => unsubscribe();
-  }, []);
+  }, [userId]);
+
+  if (!userId) return null; 
 
   if (loading) {
     return (
@@ -61,13 +75,10 @@ export default function ExploreScreen() {
               latitude: loc.latitude,
               longitude: loc.longitude,
             }}
-            title={`${loc.id}`}
-            description={
-              loc.timestamp
-                ? new Date(loc.timestamp).toLocaleString()
-                : "No timestamp"
-            }
-            pinColor={loc.id === userId ? "blue" : "red"} 
+            title={`📍 ${new Date(
+              loc.timestamp ?? Date.now()
+            ).toLocaleString()}`}
+            pinColor="blue"
           />
         ))}
       </MapView>
@@ -84,4 +95,3 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
 });
-
