@@ -1,5 +1,6 @@
+// app/auth/Signup.tsx
 import React, { useState } from "react";
-import { View, TextInput, Button, Text, StyleSheet, Alert, TouchableOpacity,} from "react-native";
+import { View, TextInput, Button, Text, StyleSheet, Alert, TouchableOpacity } from "react-native";
 import { createUserWithEmailAndPassword } from "firebase/auth";
 import { auth, db } from "../firebaseConfig";
 import { doc, setDoc } from "firebase/firestore";
@@ -11,13 +12,10 @@ export default function SignupScreen() {
 
   const handleSignup = async () => {
     try {
-      const userCredential = await createUserWithEmailAndPassword(
-        auth,
-        email,
-        password
-      );
+      const userCredential = await createUserWithEmailAndPassword(auth, email, password);
       const user = userCredential.user;
 
+      // write user info into Firestore
       await setDoc(doc(db, "users", user.uid), {
         email: user.email,
         createdAt: new Date().toISOString(),
@@ -33,25 +31,9 @@ export default function SignupScreen() {
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Sign Up</Text>
-
-      <TextInput
-        placeholder="Email"
-        value={email}
-        onChangeText={setEmail}
-        style={styles.input}
-        autoCapitalize="none"
-      />
-
-      <TextInput
-        placeholder="Password"
-        value={password}
-        onChangeText={setPassword}
-        secureTextEntry
-        style={styles.input}
-      />
-
+      <TextInput placeholder="Email" value={email} onChangeText={setEmail} style={styles.input} autoCapitalize="none" />
+      <TextInput placeholder="Password" value={password} onChangeText={setPassword} secureTextEntry style={styles.input} />
       <Button title="Sign Up" onPress={handleSignup} />
-
       <TouchableOpacity onPress={() => router.push("/auth/Login")}>
         <Text style={styles.link}>Already have an account? Log in</Text>
       </TouchableOpacity>
@@ -62,12 +44,6 @@ export default function SignupScreen() {
 const styles = StyleSheet.create({
   container: { flex: 1, justifyContent: "center", padding: 20 },
   title: { fontSize: 24, textAlign: "center", marginBottom: 20 },
-  input: {
-    borderWidth: 1,
-    borderColor: "#ccc",
-    padding: 10,
-    marginVertical: 8,
-    borderRadius: 8,
-  },
+  input: { borderWidth: 1, borderColor: "#ccc", padding: 10, marginVertical: 8, borderRadius: 8 },
   link: { color: "blue", textAlign: "center", marginTop: 10 },
 });

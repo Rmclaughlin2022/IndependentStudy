@@ -8,6 +8,11 @@ export default function useLocationTracker(userId) {
   const [location, setLocation] = useState(null);
 
   useEffect(() => {
+    if (!userId) {
+      console.warn("No userId provided to useLocationTracker");
+      return;
+    }
+
     (async () => {
       try {
         const { status } = await Location.requestForegroundPermissionsAsync();
@@ -20,11 +25,12 @@ export default function useLocationTracker(userId) {
         const { latitude, longitude } = loc.coords;
         const timestamp = new Date().toISOString();
 
-        const newLocation = { latitude, longitude, timestamp };
+        const newLocation = { latitude, longitude, timestamp, userId };
         setLocation(newLocation);
 
         await setDoc(doc(db, "locations", userId), newLocation);
-        console.log("✅ Location saved:", newLocation);
+
+        console.log("Location saved for user:", userId, newLocation);
       } catch (error) {
         console.error("Error getting/saving location:", error);
       }
@@ -33,4 +39,3 @@ export default function useLocationTracker(userId) {
 
   return location;
 }
-
