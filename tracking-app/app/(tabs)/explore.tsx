@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { View, StyleSheet, ActivityIndicator, Alert } from "react-native";
 import MapView, { Marker } from "react-native-maps";
 import { collection, onSnapshot, query, where } from "firebase/firestore";
-import { db, auth } from "../firebaseConfig";
+import { db, auth } from "../../Firebase/firebaseConfig";
 import useLocationTracker from "../hooks/useLocationTracker";
 import { router } from "expo-router";
 

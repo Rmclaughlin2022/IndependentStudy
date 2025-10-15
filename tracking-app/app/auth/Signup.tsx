@@ -1,8 +1,7 @@
-// app/auth/Signup.tsx
 import React, { useState } from "react";
 import { View, TextInput, Button, Text, StyleSheet, Alert, TouchableOpacity } from "react-native";
 import { createUserWithEmailAndPassword } from "firebase/auth";
-import { auth, db } from "../firebaseConfig";
+import { auth, db } from "../../Firebase/firebaseConfig";
 import { doc, setDoc } from "firebase/firestore";
 import { router } from "expo-router";
 

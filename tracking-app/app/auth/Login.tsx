@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { View, TextInput, Button, Text, StyleSheet, Alert, TouchableOpacity } from "react-native";
 import { signInWithEmailAndPassword } from "firebase/auth";
-import { auth } from "../firebaseConfig";
+import { auth } from "../../Firebase/firebaseConfig";
 import { router } from "expo-router";
 
 export default function LoginScreen() {
@@ -12,7 +12,7 @@ export default function LoginScreen() {
     try {
       await signInWithEmailAndPassword(auth, email, password);
       Alert.alert("Login successful!");
-      router.replace("/(tabs)/explore"); // 👈 route to explore map after login
+      router.replace("/(tabs)/explore"); 
     } catch (error: any) {
       Alert.alert("Login failed", error.message);
     }

@@ -1,7 +1,7 @@
 import * as Location from "expo-location";
 import { useEffect, useState } from "react";
 import { Alert } from "react-native";
-import { db } from "../firebaseConfig";
+import { db } from "../../Firebase/firebaseConfig";
 import { doc, setDoc } from "firebase/firestore";
 
 export default function useLocationTracker(userId) {
@@ -9,7 +9,6 @@ export default function useLocationTracker(userId) {
 
   useEffect(() => {
     if (!userId) {
-      console.warn("No userId provided to useLocationTracker");
       return;
     }
 

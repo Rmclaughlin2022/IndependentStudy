@@ -9,7 +9,7 @@ export default function StartScreen() {
 };
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Welcome to Ryan's Tracking App</Text>
+      <Text style={styles.title}>Ryan's Tracking App</Text>
       <TouchableOpacity style={styles.button} onPress={handleStart}>
         <Text style={styles.buttonText}>Start Tracking</Text>
       </TouchableOpacity>
