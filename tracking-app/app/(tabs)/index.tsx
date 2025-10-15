@@ -4,7 +4,6 @@ import { router } from "expo-router";
 
 export default function StartScreen() {
   const handleStart = () => {
-    console.log("Start button pressed");
     router.push("/auth/Login")
 };
   return (

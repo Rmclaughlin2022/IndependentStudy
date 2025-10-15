@@ -15,33 +15,37 @@ interface LocationData {
 }
 
 export default function ExploreScreen() {
+
   const user = auth.currentUser;
   const userId = user?.uid ?? null;
-
+//user?.uid ?? null is the same as saying get the user id if the user exists, otherwise return null
   useLocationTracker(userId);
 
   const [locations, setLocations] = useState<LocationData[]>([]);
   const [loading, setLoading] = useState(true);
 
+  // If not logged in, move them to the login page
   useEffect(() => {
     if (!userId) {
       Alert.alert("Not Logged In", "Please log in to view the map.");
       router.replace("/auth/Login");
       return;
     }
-
+  //create query to get locations for the current user
     const q = query(collection(db, "locations"), where("userId", "==", userId));
 
-    const unsubscribe = onSnapshot(q, (snapshot) => {
+    //Snapshot is a function that listens for changes in the database
+
+    const StopListening = onSnapshot(q, (snapshot) => {
       const updated: LocationData[] = snapshot.docs.map((doc) => ({
         id: doc.id,
-        ...(doc.data() as Omit<LocationData, "id">),
+        ...(doc.data() as Omit<LocationData, "id">), // ... = spread operator (take all the properties of the object and spread them out into a new object)
       }));
       setLocations(updated);
       setLoading(false);
     });
 
-    return () => unsubscribe();
+    return () => StopListening();
   }, [userId]);
 
   if (!userId) return null; 
@@ -54,8 +58,8 @@ export default function ExploreScreen() {
     );
   }
 
-  const initialLat = locations[0]?.latitude ?? 37.78825;
-  const initialLng = locations[0]?.longitude ?? -122.4324;
+  const initialLat = locations[0]?.latitude ?? 35.4955;
+  const initialLng = locations[0]?.longitude ?? 97.5410;
 
   return (
     <View style={styles.container}>
