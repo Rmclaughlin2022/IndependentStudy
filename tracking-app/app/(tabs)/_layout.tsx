@@ -58,8 +58,6 @@ export default function TabLayout() {
           ),
         }}
       />
-      {/*Future Settings Tab */}
-      {/* 
       <Tabs.Screen
         name="settings"
         options={{
@@ -69,7 +67,7 @@ export default function TabLayout() {
           ),
         }}
       />
-      */}
+      
     </Tabs>
   );
 }
