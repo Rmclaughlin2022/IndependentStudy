@@ -1,50 +1,112 @@
 import React from "react";
-import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
+import { View, Text, StyleSheet, TouchableOpacity, Image } from "react-native";
+import { LinearGradient } from "expo-linear-gradient";
 import { router } from "expo-router";
 
 export default function StartScreen() {
   const handleStart = () => {
-    router.push("/auth/Login")
-};
+    router.push("/auth/Signup"); 
+  };
+
+  const handleSignIn = () => {
+    router.push("/auth/Login");
+  };
+
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>Ryan's Tracking App</Text>
+    <LinearGradient
+      colors={["#001220", "#001C33", "#002B40"]}
+      style={styles.container}
+    >
+      <View style={styles.header}>
+        <Image
+          source={require("../../assets/images/NewGeoTraceLogo.png")}
+          style={styles.logo}
+          resizeMode="contain"
+        />
+        <Text style={styles.subtitle}>
+          Track. Connect. Locate. in real time.
+        </Text>
+      </View>
+
       <TouchableOpacity style={styles.button} onPress={handleStart}>
-        <Text style={styles.buttonText}>Start Tracking</Text>
+        <LinearGradient
+          colors={["#00C896", "#1E90FF"]}
+          start={{ x: 0, y: 0 }}
+          end={{ x: 1, y: 1 }}
+          style={styles.buttonGradient}
+        >
+          <Text style={styles.buttonText}>Start Tracking</Text>
+        </LinearGradient>
       </TouchableOpacity>
-    </View>
+
+      <TouchableOpacity onPress={handleSignIn}>
+        <Text style={styles.signInText}>Already have an account? Sign In</Text>
+      </TouchableOpacity>
+
+      <Text style={styles.footer}>© 2025 GeoTrace Technologies</Text>
+    </LinearGradient>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#030303ff',
-    padding: 20,
+    justifyContent: "center",
+    alignItems: "center",
+    paddingHorizontal: 20,
+  },
+  header: {
+    alignItems: "center",
+    marginBottom: 100,
+  },
+  logo: {
+    width: 320,
+    height: 320,
   },
   title: {
-    fontSize: 32,
-    fontWeight: 'bold',
-    color: "#fff",
-    marginBottom: 20,
+    fontSize: 40,
+    fontWeight: "800",
+    color: "#E0F7FA",
+    marginBottom: 10,
+    letterSpacing: 1.5,
   },
   subtitle: {
-    fontSize: 18,
-    color: '#666',
-    marginBottom: 40,
-    textAlign: 'center',
+    fontSize: 16,
+    color: "#A7C7E7",
+    textAlign: "center",
+    maxWidth: 280,
   },
   button: {
-    backgroundColor: '#007AFF',
+    width: "75%",
+    borderRadius: 40,
+    overflow: "hidden",
+    shadowColor: "#00C896",
+    shadowOpacity: 0.4,
+    shadowRadius: 10,
+    shadowOffset: { width: 0, height: 5 },
+    marginBottom: 20,
+  },
+  buttonGradient: {
     paddingVertical: 15,
-    paddingHorizontal: 30,
-    borderRadius: 10,
+    justifyContent: "center",
+    alignItems: "center",
   },
   buttonText: {
-    color: '#fff',
+    color: "#FFFFFF",
     fontSize: 18,
-    fontWeight: 'bold',
+    fontWeight: "700",
+    letterSpacing: 0.8,
+  },
+  signInText: {
+    color: "#5AC8FA",
+    fontSize: 16,
+    marginTop: 10,
+    textDecorationLine: "underline",
+  },
+  footer: {
+    position: "absolute",
+    bottom: 40,
+    color: "#5C8EAA",
+    fontSize: 14,
   },
 });
