@@ -34,7 +34,7 @@ export default function useLocationTracker(userId) {
         console.error("Error getting/saving location:", error);
       }
     })();
-  }, [userId]);
+  }, [userId]); // Only re-run if userId changes
 
   return location;
 }

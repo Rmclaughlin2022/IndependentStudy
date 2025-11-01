@@ -43,7 +43,6 @@ export default function ExploreScreen() {
     }
   }, [userId]);
 
-  // Subscribe to user locations
   useEffect(() => {
     if (!userId) return;
 
